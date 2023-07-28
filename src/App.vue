@@ -1,40 +1,43 @@
-<script setup lang="ts">
-  async function addSticky() {
-    const stickyNote = await miro.board.createStickyNote({
-      content: 'Hello, World!',
-    });
+<script lang="ts">
+export default {
+  data() {
+    return {
 
-    await miro.board.viewport.zoomTo(stickyNote);
+    }
+  },
+  methods: {
+    loadXml(event: Event) {
+      const target = event.target as HTMLInputElement
+      if (!target.files) return console.log("Unexpected error")
+
+      let file = target.files[0]
+
+      let reader = new FileReader()
+      let parser = new DOMParser()
+
+      reader.readAsText(file)
+
+      reader.onload = function () {
+        let xmlDoc = parser.parseFromString(reader.result as string, "text/xml")
+        console.log(xmlDoc)
+      }
+
+      reader.onerror = function () {
+        console.log(reader.error)
+      }
+    }
   }
-  addSticky()
+}
 </script>
 
 <template>
-    <div id="root">
-      <div class="grid wrapper">
-        <div class="cs1 ce12">
-          <img src="/src/assets/congratulations.png" alt="" />
-        </div>
-        <div class="cs1 ce12">
-          <h1>Congratulations!</h1>
-          <p>You've just created your first Miro app!</p>
-          <p>
-            To explore more and build your own app, see the Miro Developer
-            Platform documentation.
-          </p>
-        </div>
-        <div class="cs1 ce12">
-          <a
-              class="button button-primary"
-              target="_blank"
-              href="https://developers.miro.com"
-          >
-            Read the documentation
-          </a>
-        </div>
+  <div id="root">
+    <div class="grid wrapper">
+      <div class="cs1 ce12">
+        <input type="file" @change="loadXml" accept="*/*">
       </div>
     </div>
+  </div>
 </template>
 
-<style>
-</style>
+<style></style>
